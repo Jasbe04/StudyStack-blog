@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <article>
+                <header class="mb-4 text-center">
+                    <h1 class="fw-bolder mb-1">{{ single_blog.title }}</h1>
+                    <div class="text-muted fst-italic mb-2">Posted on {{ single_blog.created_at }} by {{ single_blog.author }}</div>
+                    <a class="badge bg-primary text-decoration-none text-light px-3 py-2" href="#!">{{ single_blog.category }}</a>
+                </header>
+
+                <figure class="mb-4">
+                    <img class="img-fluid rounded shadow-sm w-100" src="{{ single_blog.featured_image.url }}" alt="{{ single_blog.title }}" />
+                </figure>
+
+                <section class="mb-5">
+                    <p class="fs-5 mb-4 fw-bold text-secondary">{{ single_blog.short_description }}</p>
+                    <div class="fs-5 mb-4">
+                        {{ single_blog.blog_body | safe }}
+                    </div>
+
+                    <hr class="my-5">
+
+                    <div class="comments-container">
+                        <h4 class="fw-bold mb-3">Comments ({{ comment_count }})</h4>
+                        {% if comments %}
+                            {% for comment in comments %}
+                                <div class="card mt-2 border-0 shadow-sm bg-light">
+                                    <div class="card-body" id="comment-body-{{ comment.id }}">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="w-100">
+                                                <div id="comment-text-{{ comment.id }}">
+                                                    <p class="card-text mb-1 text-dark">{{ comment.comment }}</p>
+                                                    <small class="text-muted">By <strong>{{ comment.user }}</strong> | {{ comment.created_at | timesince }} ago</small>
+                                                </div>
+
+                                                <div id="edit-form-{{ comment.id }}" class="d-none mt-2">
+                                                    <form action="{% url 'edit_comment' comment.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <textarea name="comment" class="form-control border-primary mb-2" rows="3">{{ comment.comment }}</textarea>
+                                                        <div class="d-flex gap-2">
+                                                            <button type="submit" class="btn btn-primary btn-sm fw-bold">Save Changes</button>
+                                                            <button type="button" class="btn btn-light btn-sm" onclick="toggleEdit('{{ comment.id }}')">Cancel</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            {% if user.is_authenticated %}
+                                                {% if user == comment.user or user.is_superuser or user.is_staff %}
+                                                    <div class="ms-3 d-flex align-items-center">
+                                                        <a href="javascript:void(0);" 
+                                                           class="text-primary me-3" 
+                                                           onclick="toggleEdit('{{ comment.id }}')"
+                                                           title="Edit Comment">
+                                                            <i class="fa fa-pen-to-square"></i>
+                                                        </a>
+
+                                                        <a href="{% url 'delete_comment' comment.id %}" 
+                                                           class="text-danger" 
+                                                           onclick="return confirm('Are you sure you want to delete this comment?')"
+                                                           title="Delete Comment">
+                                                            <i class="fa fa-trash-can"></i>
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted fst-italic text-center">No comments yet. Be the first to share your thoughts!</p>
+                        {% endif %}
+
+                        <div class="mt-5 p-4 bg-white border rounded shadow-sm">
+                            <h4 class="fw-bold mb-3">Leave a Comment</h4>
+                            {% if user.is_authenticated %}
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <textarea name="comment" class="form-control border-secondary-subtle" rows="3" placeholder="Join the discussion..." required></textarea>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-warning fw-bold px-4">Post Comment</button>
+                                    </div>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-secondary border-0 text-center">
+                                    <p class="mb-0">Please <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none">login</a> to participate.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * Toggles between the comment text and the edit form
+     * This keeps the user right in the flow of the comments
+     */
+    function toggleEdit(commentId) {
+        const textDiv = document.getElementById(`comment-text-${commentId}`);
+        const formDiv = document.getElementById(`edit-form-${commentId}`);
+        
+        if (formDiv.classList.contains('d-none')) {
+            formDiv.classList.remove('d-none');
+            textDiv.classList.add('d-none');
+        } else {
+            formDiv.classList.add('d-none');
+            textDiv.classList.remove('d-none');
+        }
+    }
+</script>
+{% endblock %}

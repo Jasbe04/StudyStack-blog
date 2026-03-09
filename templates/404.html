@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - 404</title>
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .error-container { text-align: center; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .error-code { font-size: 6rem; font-weight: 800; color: #343a40; margin-bottom: 0; }
+        .error-message { font-size: 1.5rem; color: #6c757d; margin-bottom: 2rem; }
+        .btn-home { background-color: #007bff; color: white; padding: 0.75rem 1.5rem; border-radius: 50px; text-decoration: none; transition: background 0.3s; }
+        .btn-home:hover { background-color: #0056b3; color: white; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <p class="error-message">Oops! The page or category you're looking for has vanished.</p>
+        <a href="/" class="btn-home">Back to Homepage</a>
+    </div>
+</body>
+</html>
