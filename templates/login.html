@@ -5,74 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | StudyStack</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        :root {
+            --primary-blue: #2569cf;
+            --dark-blue: #1a4ba3;
+            --soft-bg: #f4f7f6;
+        }
+
         body {
-            background-color: #f4f7f6;
+            background-color: var(--soft-bg);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .login-card {
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
             padding: 2.5rem;
             border: none;
-            border-radius: 15px;
+            border-radius: 16px;
             background: #ffffff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 15px 35px rgba(37, 105, 207, 0.1);
         }
 
         .brand-logo {
             font-size: 2rem;
             font-weight: 800;
-            color: #212529;
+            color: #1a1a1a;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
             text-decoration: none;
             display: block;
         }
 
-        .btn-warning {
-            background-color: #ffc107;
+        .brand-logo i {
+            color: var(--primary-blue);
+        }
+
+        /* Overriding warning to StudyStack Blue */
+        .btn-primary-custom {
+            background-color: var(--primary-blue);
             border: none;
+            color: white;
             font-weight: 700;
             padding: 0.8rem;
             width: 100%;
-            border-radius: 8px;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
 
-        .btn-warning:hover {
-            background-color: #e5ac00;
+        .btn-primary-custom:hover {
+            background-color: var(--dark-blue);
             transform: translateY(-1px);
+            color: white;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #495057;
         }
 
         .form-control {
-            padding: 0.8rem;
-            border-radius: 8px;
+            padding: 0.75rem;
+            border-radius: 10px;
             border: 1px solid #dee2e6;
         }
 
         .form-control:focus {
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
-            border-color: #ffc107;
+            box-shadow: 0 0 0 3px rgba(37, 105, 207, 0.15);
+            border-color: var(--primary-blue);
         }
 
         .register-link {
             text-align: center;
             margin-top: 1.5rem;
             color: #6c757d;
+            font-size: 0.95rem;
         }
 
         .register-link a {
-            color: #ffc107;
+            color: var(--primary-blue);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .register-link a:hover {
@@ -84,15 +105,16 @@
 
 <div class="login-card">
     <a href="/" class="brand-logo">
-        <i class="fa fa-code text-warning"></i> StudyStack
+        <i class="fa fa-book-open"></i> StudyStack
     </a>
+    <p class="text-center text-muted mb-4">Explore Our Blog Website</p>
 
     <h4 class="text-center fw-bold mb-4">Welcome Back</h4>
 
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
+                <small>{{ message }}</small>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
@@ -101,32 +123,37 @@
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
         
-        {% if form %}
-            <div class="mb-3">
-                {{ form.username.label_tag }}
-                <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="fa fa-user text-muted"></i></span>
+                <input type="text" name="username" class="form-control border-start-0" placeholder="Enter username" required>
             </div>
-            <div class="mb-3">
-                {{ form.password.label_tag }}
-                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
-            </div>
-        {% endif %}
-
-        <div class="d-flex justify-content-between mb-4">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="rememberMe">
-                <label class="form-check-label small" for="rememberMe">Remember me</label>
-            </div>
-            <a href="#" class="small text-muted text-decoration-none">Forgot Password?</a>
         </div>
 
-        <button type="submit" class="btn btn-warning shadow-sm">
-            Login <i class="fa fa-arrow-right ms-2"></i>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><i class="fa fa-lock text-muted"></i></span>
+                <input type="password" name="password" class="form-control border-start-0" placeholder="Enter password" required>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label small text-muted" for="rememberMe">Keep me logged in</label>
+            </div>
+            <a href="#" class="small text-primary fw-600 text-decoration-none">Forgot?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary-custom shadow-sm">
+            Sign In <i class="fa fa-arrow-right ms-2"></i>
         </button>
     </form>
 
     <div class="register-link">
-        <p class="mb-0">Don't have an account? <a href="{% url 'register' %}">Sign Up</a></p>
+        <p class="mb-0">New to StudyStack? <a href="{% url 'register' %}">Join Now</a></p>
     </div>
 </div>
 
